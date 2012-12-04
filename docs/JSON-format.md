@@ -45,8 +45,9 @@ Each reply is transformed to single node.
 * __nodes__: _array_, list of child nodes of the reply
   
 ## Paragraph node (type="paragraph")
-Paragraph node defines a single text block that should be ended with newline.
+Paragraph node defines a single text block that should be ended up with newline.
 * bulleted: _boolean_, _true_ if text block is a list item
+* __nodes__: _array_, list of child nodes of the paragraph
 
 ## Text node (type="text")
 Text nodes are used for various text presentations: links, styles, background color etc.  
