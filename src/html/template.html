@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+
+{% macro macro_reply node -%}
+    <div class="type-reply">
+        <div><a href="mailto:{{ node.author.email }}">{{ node.author.name }}:</a></div>
+        {%- if node.nodes %}{{ macro_nodes(node.nodes) }}{% endif -%}
+    </div>
+{%- endmacro %}
+
+{% macro macro_paragraph node -%}
+    <div class="type-paragraph">
+        {%- if node.bulleted %}&bull;{% endif -%}
+        {%- if node.nodes %}{{ macro_nodes(node.nodes) }}{% endif -%}
+    </div>
+{%- endmacro %}
+
+{% macro macro_link node -%}
+    <a class="type-link" href="{{ node.url }}">{% if node.nodes %}{{ macro_nodes(node.nodes) }}{% endif %}</a>
+{%- endmacro %}
+
+{% macro macro_text node -%}
+    <span class="type-text
+            {%- if node.bold %}bold{% endif -%}
+            {%- if node.italic %}italic{% endif -%}
+            {%- if node.struckthrough %}struckthrough{% endif -%}
+            {%- if node.underlined %}underlined{% endif -%}
+        " {% if node.bgColor and not node.bgColor|contains_semicolon %}style="background-color: {{ node.bgColor }}"{% endif %}>
+        {%- if node.value %}{{ node.value }}{% endif -%}
+        {%- if node.nodes %}{{ macro_nodes(node.nodes) }}{% endif -%}
+    </span>
+{%- endmacro %}
+
+{% macro macro_attachment node -%}
+    <a class="type-attachment" href="{{ node.url }}"><img src="{{ node.url }}"></a>
+{%- endmacro %}
+
+{% macro macro_file node -%}
+    <a class="type-file" href="{{ node.url }}">
+        {%- if node.preview -%}
+            <img src="{{ node.preview }}" title="{{ node.name }}">
+        {%- else -%}
+            {{ node.name|default("download") }}
+        {%- endif -%}
+    </a>
+{%- endmacro %}
+
+{% macro macro_nodes nodes -%}
+    {%- for node in nodes -%}
+        {%- if node.type == "reply" -%}
+            {{ macro_reply(node) }}
+        {%- endif -%}
+        {%- if node.type == "paragraph" -%}
+            {{ macro_paragraph(node) }}
+        {%- endif -%}
+        {%- if node.type == "text" -%}
+            {%- if node.url -%}
+                {{ macro_link(node) }}
+            {%- else -%}
+                {{ macro_text(node) }}
+            {%- endif -%}
+        {%- endif -%}
+        {%- if node.type == "attachment" -%}
+            {{ macro_attachment(node) }}
+        {%- endif -%}
+        {%- if node.type == "file" -%}
+            {{ macro_file(node) }}
+        {%- endif -%}
+    {%- endfor -%}
+{%- endmacro %}
+
+<html>
+    <head>
+        <title>{{ topic.title }}</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <style>
+            html {
+                min-height: 100%;
+            }
+            body {
+                background: #728AA0;
+                margin: 0;
+                padding: 0;
+                height: 100%;
+                font-family: serif;
+                font-size: 14px;
+                line-height: 130%;
+            }
+            h1 {
+                margin: 0;
+                font-size: 18px;
+            }
+            .content {
+                width: 1000px;
+                height: 100%;
+                background: white;
+                margin: 0 auto;
+                padding: 0 5px;
+            }
+            .original-topic-link {
+                font-size: small;
+            }
+            .type-reply {
+                margin: 5px 0 5px 25px;
+                padding: 5px;
+                min-height: 1em;
+                border: 1px solid #DDD;
+                border-radius: 5px;
+            }
+            body > .type-reply {
+                margin-left: 0;
+                margin-right: 0;
+            }
+            .type-paragraph {
+                margin-top: 3px;
+                min-height: 0.5em;
+            }
+            .type-attachment img {
+                max-width: 200px;
+                max-height: 150px;
+            }
+            .type-file img {
+                background: silver;
+                max-width: 200px;
+                max-height: 150px;
+            }
+            .bold {
+                font-weight: bold;
+            }
+            .italic {
+                font-style: italic;
+            }
+            .struckthrough {
+                text-decoration: line-through;
+            }
+            .underlined {
+                text-decoration: underline;
+            }
+        </style>
+    </head>
+    <body>
+    <div class="content">
+        <h1>{{ topic.title }} <a href="{{ topic.url }}" class="original-topic-link">(original topic...)</a></h1>
+        {{ macro_nodes(topic.nodes) }}
+    </div>
+    </body>
+</html>
