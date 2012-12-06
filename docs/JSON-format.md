@@ -68,3 +68,9 @@ Each node will contain single attribute only (except "nodes"). The "node" attrib
 * __name__: _string_, name of the file
 * __url__: _string_, URL of the file
 * preview: _string_, URL of a small thumbnail
+
+## Recipient node (type="recipient")
+Also known as "mention". This is link to some user.
+* __email__: _string_, email of the user
+* __name__: _string_, name of the user
+* avatar: _string_, URL of avatar picture
