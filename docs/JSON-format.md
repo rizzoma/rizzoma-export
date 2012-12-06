@@ -60,7 +60,11 @@ Each node will contain single attribute only (except "nodes"). The "node" attrib
 * bgColor: _string_, CSS color value of the text
 * value: _string_, value of the text
 * nodes: _array_, list of child nodes of the text
-  
+
+## Tag node (type="tag")
+Tag is a keyword prepended by the "#" symbol.
+* __value__: _string_, text value of the tag
+
 ## Attachment node (type="attachment")
 * __url__: _string_, URL of the attachment
   
@@ -70,7 +74,7 @@ Each node will contain single attribute only (except "nodes"). The "node" attrib
 * preview: _string_, URL of a small thumbnail
 
 ## Recipient node (type="recipient")
-Also known as "mention". This is link to some user.
+Also known as "mention". This is a link to some user, prepended by the "@" symbol.
 * __email__: _string_, email of the user
 * __name__: _string_, name of the user
 * avatar: _string_, URL of avatar picture

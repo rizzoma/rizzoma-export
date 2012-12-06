@@ -48,6 +48,10 @@
     <a class="type-recipient" href="mailto:{{ node.email }}">@{{ node.name }}</a>
 {%- endmacro %}
 
+{% macro macro_tag node -%}
+    <span class="type-tag">#{{ node.value }}</span>
+{%- endmacro %}
+
 {% macro macro_nodes nodes -%}
     {%- for node in nodes -%}
         {%- if node.type == "reply" -%}
@@ -71,6 +75,9 @@
         {%- endif -%}
         {%- if node.type == "recipient" -%}
             {{ macro_recipient(node) }}
+        {%- endif -%}
+        {%- if node.type == "tag" -%}
+            {{ macro_tag(node) }}
         {%- endif -%}
     {%- endfor -%}
 {%- endmacro %}
@@ -132,6 +139,19 @@
                 background: silver;
                 max-width: 200px;
                 max-height: 150px;
+            }
+            .type-recipient {
+                padding: 0 3px;
+                color: #5CAAF7;
+                background: #EAEAEA;
+                border: 2px solid white;
+                border-radius: 3px;
+            }
+            .type-tag {
+                padding: 0 3px;
+                background: #EAEAEA;
+                border: 2px solid white;
+                border-radius: 3px;
             }
             .bold {
                 font-weight: bold;
