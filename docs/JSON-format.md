@@ -51,7 +51,7 @@ Paragraph node defines a single text block that should be ended up with newline.
 
 ## Text node (type="text")
 Text nodes are used for various text presentations: links, styles, background color etc.  
-Each node will contain single attribute only (except "nodes"). The "node" attribute may be paired with any another.
+Each node will contain single attribute only (except "nodes"). The "nodes" attribute may be paired with any another.
 * url: _string_, URL if text is a link
 * bold: _boolean_, _true_ if text is bold
 * italic: _boolean_, _true_ if text is italic
@@ -69,6 +69,7 @@ Tag is a keyword prepended by the "#" symbol.
 * __url__: _string_, URL of the attachment
   
 ## File node (type="file")
+Any uploaded file.
 * __name__: _string_, name of the file
 * __url__: _string_, URL of the file
 * preview: _string_, URL of a small thumbnail
