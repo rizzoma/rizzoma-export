@@ -1,4 +1,5 @@
+toEmbeddedHtml = require('./src/embedded_html').toEmbeddedHtml
 toHtml = require('./src/html').toHtml
 toJson = require('./src/json').toJson
 
-module.exports = {toHtml, toJson}
+module.exports = {toEmbeddedHtml, toHtml, toJson}

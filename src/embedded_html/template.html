@@ -1,0 +1,155 @@
+{% macro macro_reply node -%}
+    <div class="export-type-reply">
+        <div><a href="mailto:{{ node.author.email }}" class="export-reply-author">{{ node.author.name }}:</a></div>
+        {%- if node.nodes %}{{ macro_nodes(node.nodes) }}{% endif -%}
+    </div>
+{%- endmacro %}
+
+{% macro macro_paragraph node -%}
+    <div class="export-type-paragraph">
+        {%- if node.bulleted %}&bull;{% endif -%}
+        {%- if node.nodes %}{{ macro_nodes(node.nodes) }}{% endif -%}
+    </div>
+{%- endmacro %}
+
+{% macro macro_link node -%}
+    <a class="export-type-link" href="{{ node.url }}">{% if node.nodes %}{{ macro_nodes(node.nodes) }}{% endif %}</a>
+{%- endmacro %}
+
+{% macro macro_text node -%}
+    <span class="export-type-text
+            {%- if node.bold %}export-text-bold{% endif -%}
+            {%- if node.italic %}export-text-italic{% endif -%}
+            {%- if node.struckthrough %}export-text-struckthrough{% endif -%}
+            {%- if node.underlined %}export-text-underlined{% endif -%}
+        " {% if node.bgColor and not node.bgColor|contains_semicolon %}style="background-color: {{ node.bgColor }}"{% endif %}>
+        {%- if node.value %}{{ node.value }}{% endif -%}
+        {%- if node.nodes %}{{ macro_nodes(node.nodes) }}{% endif -%}
+    </span>
+{%- endmacro %}
+
+{% macro macro_attachment node -%}
+    <a class="export-type-attachment" href="{{ node.url }}"><img src="{{ node.url }}"></a>
+{%- endmacro %}
+
+{% macro macro_file node -%}
+    <a class="export-type-file" href="{{ node.url }}">
+        {%- if node.preview -%}
+            <img src="{{ node.preview }}" title="{{ node.name }}">
+        {%- else -%}
+            {{ node.name|default("download") }}
+        {%- endif -%}
+    </a>
+{%- endmacro %}
+
+{% macro macro_recipient node -%}
+    <a class="export-type-recipient" href="mailto:{{ node.email }}">@{{ node.name }}</a>
+{%- endmacro %}
+
+{% macro macro_tag node -%}
+    <span class="export-type-tag">#{{ node.value }}</span>
+{%- endmacro %}
+
+{% macro macro_nodes nodes -%}
+    {%- for node in nodes -%}
+        {%- if node.type == "reply" -%}
+            {{ macro_reply(node) }}
+        {%- endif -%}
+        {%- if node.type == "paragraph" -%}
+            {{ macro_paragraph(node) }}
+        {%- endif -%}
+        {%- if node.type == "text" -%}
+            {%- if node.url -%}
+                {{ macro_link(node) }}
+            {%- else -%}
+                {{ macro_text(node) }}
+            {%- endif -%}
+        {%- endif -%}
+        {%- if node.type == "attachment" -%}
+            {{ macro_attachment(node) }}
+        {%- endif -%}
+        {%- if node.type == "file" -%}
+            {{ macro_file(node) }}
+        {%- endif -%}
+        {%- if node.type == "recipient" -%}
+            {{ macro_recipient(node) }}
+        {%- endif -%}
+        {%- if node.type == "tag" -%}
+            {{ macro_tag(node) }}
+        {%- endif -%}
+    {%- endfor -%}
+{%- endmacro %}
+
+{% macro macro_main topic -%}
+    <div class="export-content">
+        <style scoped>
+            .export-content {
+                font-family: serif;
+                font-size: 14px;
+                line-height: 130%;
+            }
+            .export-content h1 {
+                margin: 0;
+                padding: 5px 0;
+                font-size: 18px;
+            }
+            .export-original-topic-link {
+                font-size: small;
+            }
+            .export-type-reply {
+                margin: 5px 0 5px 25px;
+                padding: 5px;
+                min-height: 1em;
+                border: 1px solid #DDD;
+                border-radius: 5px;
+            }
+            .export-reply-author {
+                color: #333;
+            }
+            .export-type-paragraph {
+                margin-top: 3px;
+                min-height: 0.5em;
+            }
+            .export-type-attachment img {
+                max-width: 200px;
+                max-height: 150px;
+            }
+            .export-type-file img {
+                background: silver;
+                max-width: 200px;
+                max-height: 150px;
+            }
+            .export-type-recipient {
+                padding: 0 3px;
+                color: #5CAAF7;
+                background: #EAEAEA;
+                border: 2px solid white;
+                border-radius: 3px;
+            }
+            .export-type-tag {
+                padding: 0 3px;
+                background: #EAEAEA;
+                border: 2px solid white;
+                border-radius: 3px;
+            }
+            .export-text-bold {
+                font-weight: bold;
+            }
+            .export-text-italic {
+                font-style: italic;
+            }
+            .export-text-struckthrough {
+                text-decoration: line-through;
+            }
+            .export-text-underlined {
+                text-decoration: underline;
+            }
+        </style>
+        <h1>{{ topic.title }} <a href="{{ topic.url }}" class="export-original-topic-link">(original topic...)</a></h1>
+        {{ macro_nodes(topic.nodes) }}
+    </div>
+{%- endmacro %}
+
+{% block main -%}
+    {{ macro_main(topic) }}
+{%- endblock %}
