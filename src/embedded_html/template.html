@@ -43,7 +43,15 @@
 {%- endmacro %}
 
 {% macro macro_recipient node -%}
-    <a class="export-type-recipient" href="mailto:{{ node.email }}">@{{ node.name }}</a>
+    <a class="export-type-recipient" href="mailto:{{ node.user.email }}">@{{ node.user.name }}</a>
+{%- endmacro %}
+
+{% macro macro_task node -%}
+    <span class="export-type-task">
+        <input type="checkbox" {% if node.completed %}checked{% endif %} disabled>
+        <a href="mailto:{{ node.user.email }}">{{ node.user.name }}</a>
+        {{ node.deadline|date("j M g:i A") }}
+    </span>
 {%- endmacro %}
 
 {% macro macro_tag node -%}
@@ -73,6 +81,9 @@
         {%- endif -%}
         {%- if node.type == "recipient" -%}
             {{ macro_recipient(node) }}
+        {%- endif -%}
+        {%- if node.type == "task" -%}
+            {{ macro_task(node) }}
         {%- endif -%}
         {%- if node.type == "tag" -%}
             {{ macro_tag(node) }}
@@ -125,6 +136,15 @@
                 background: #EAEAEA;
                 border: 2px solid white;
                 border-radius: 3px;
+            }
+            .export-type-task {
+                padding: 0 3px;
+                background: #EAEAEA;
+                border: 2px solid white;
+                border-radius: 3px;
+            }
+            .export-type-task a {
+                color: #5CAAF7;
             }
             .export-type-tag {
                 padding: 0 3px;
