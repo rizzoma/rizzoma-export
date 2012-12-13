@@ -6,8 +6,7 @@
 {%- endmacro %}
 
 {% macro macro_paragraph node -%}
-    <div class="export-type-paragraph">
-        {%- if node.bulleted %}&bull;{% endif -%}
+    <div class="export-type-paragraph {% if node.bulleted %}export-type-paragraph-bulleted{% endif %}">
         {%- if node.nodes %}{{ macro_nodes(node.nodes) }}{% endif -%}
     </div>
 {%- endmacro %}
@@ -18,10 +17,10 @@
 
 {% macro macro_text node -%}
     <span class="export-type-text
-            {%- if node.bold %}export-text-bold{% endif -%}
-            {%- if node.italic %}export-text-italic{% endif -%}
-            {%- if node.struckthrough %}export-text-struckthrough{% endif -%}
-            {%- if node.underlined %}export-text-underlined{% endif -%}
+            {% if node.bold %}export-text-bold{% endif %}
+            {% if node.italic %}export-text-italic{% endif %}
+            {% if node.struckthrough %}export-text-struckthrough{% endif %}
+            {% if node.underlined %}export-text-underlined{% endif %}
         " {% if node.bgColor and not node.bgColor|contains_semicolon %}style="background-color: {{ node.bgColor }}"{% endif %}>
         {%- if node.value %}{{ node.value }}{% endif -%}
         {%- if node.nodes %}{{ macro_nodes(node.nodes) }}{% endif -%}
@@ -95,24 +94,33 @@
     <div class="export-content">
         <style scoped>
             .export-content {
-                font-family: serif;
+                font-family: arial, sans-serif;
                 font-size: 14px;
-                line-height: 130%;
+                line-height: 22px;
             }
-            .export-content h1 {
+            .export-content a {
+                color: #5CAAF7;
+            }
+            .export-header {
+                padding: 8px;
+            }
+            .export-header h1 {
                 margin: 0;
-                padding: 5px 0;
                 font-size: 18px;
             }
-            .export-original-topic-link {
-                font-size: small;
-            }
             .export-type-reply {
-                margin: 5px 0 5px 25px;
-                padding: 5px;
+                padding: 12px 8px 10px 8px;
+                margin: 9px 0 16px 0;
                 min-height: 1em;
-                border: 1px solid #DDD;
+                border: 2px solid #D6D6D6;
                 border-radius: 5px;
+            }
+            .export-content > .export-type-reply {
+                border-bottom: 0;
+                border-left: 0;
+                border-right: 0;
+                border-radius: 0;
+                margin: 0;
             }
             .export-reply-author {
                 color: #333;
@@ -120,6 +128,11 @@
             .export-type-paragraph {
                 margin-top: 3px;
                 min-height: 0.5em;
+            }
+            .export-type-paragraph-bulleted {
+                display: list-item;
+                list-style: disc outside;
+                margin-left: 16px;
             }
             .export-type-attachment img {
                 max-width: 200px;
@@ -132,7 +145,6 @@
             }
             .export-type-recipient {
                 padding: 0 3px;
-                color: #5CAAF7;
                 background: #EAEAEA;
                 border: 2px solid white;
                 border-radius: 3px;
@@ -142,9 +154,6 @@
                 background: #EAEAEA;
                 border: 2px solid white;
                 border-radius: 3px;
-            }
-            .export-type-task a {
-                color: #5CAAF7;
             }
             .export-type-tag {
                 padding: 0 3px;
@@ -165,7 +174,10 @@
                 text-decoration: underline;
             }
         </style>
-        <h1>{{ topic.title }} <a href="{{ topic.url }}" class="export-original-topic-link">(original topic...)</a></h1>
+        <div class="export-header">
+            <h1>{{ topic.title }}</h1>
+            (<a href="{{ topic.url }}">original topic</a>)
+        </div>
         {{ macro_nodes(topic.nodes) }}
     </div>
 {%- endmacro %}

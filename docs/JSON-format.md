@@ -78,7 +78,7 @@ Tag is a keyword prepended by the "#" symbol.
 ### Attachment node (type="attachment")
 * __url__: _string_, URL of the attachment
   
-## File node (type="file")
+### File node (type="file")
 Any uploaded file.
 * __name__: _string_, name of the file
 * __url__: _string_, URL of the file
