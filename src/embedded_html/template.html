@@ -57,6 +57,10 @@
     <span class="export-type-tag">#{{ node.value }}</span>
 {%- endmacro %}
 
+{% macro macro_gadget node -%}
+    <div class="export-type-gadget"><a href="{{ node.url }}">{{ node.url }}</a></div>
+{%- endmacro %}
+
 {% macro macro_nodes nodes -%}
     {%- for node in nodes -%}
         {%- if node.type == "reply" -%}
@@ -86,6 +90,9 @@
         {%- endif -%}
         {%- if node.type == "tag" -%}
             {{ macro_tag(node) }}
+        {%- endif -%}
+        {%- if node.type == "gadget" -%}
+            {{ macro_gadget(node) }}
         {%- endif -%}
     {%- endfor -%}
 {%- endmacro %}
@@ -160,6 +167,13 @@
                 background: #EAEAEA;
                 border: 2px solid white;
                 border-radius: 3px;
+            }
+            .export-type-gadget {
+                padding: 12px 8px 10px 8px;
+                margin: 9px 0 16px 0;
+                background: #EAEAEA;
+                border: 2px solid #D6D6D6;
+                border-radius: 5px;
             }
             .export-text-bold {
                 font-weight: bold;

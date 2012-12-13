@@ -94,7 +94,12 @@ Similar to the "recipient" node but has an extra functionality.
 * __deadline__: _[date]_, timestamp when the task will expire
 * __completed__: _boolean_, _true_ if task is already completed
 
+### Gadget node (type="gadget")
+Embedded [OpenSocial] gadget.
+* __url__: _string_, URL of gadget XML-definition
+
 [JSON]: http://en.wikipedia.org/wiki/JSON
 [ISO 8601]: http://en.wikipedia.org/wiki/ISO_8601
+[OpenSocial]: http://en.wikipedia.org/wiki/OpenSocial
 [date]: #date-string
 [user]: #user-object
