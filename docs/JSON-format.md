@@ -47,6 +47,10 @@ Top-level node which contains all data.
 * __title__: _string_, title of the topic
 * __nodes__: _array_, list of first-level replies
 
+### Thread node (type="thread")
+List of replies that follow one by one
+* __nodes__: _array_, list of child replies of the thread
+
 ### Reply node (type="reply")
 Each reply is transformed to single node.
 * __id__: _string_, unique ID of the reply

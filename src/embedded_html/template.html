@@ -1,25 +1,31 @@
-{% macro macro_reply node -%}
-    <div class="export-type-reply">
+{%- macro macro_thread node -%}
+    <div class="export-thread">
+        {%- if node.nodes %}{{ macro_nodes(node.nodes) }}{% endif -%}
+    </div>
+{%- endmacro -%}
+
+{%- macro macro_reply node -%}
+    <div class="export-reply">
         <div class="export-reply-info">
             <a href="mailto:{{ node.author.email }}" title="{{ node.author.name }}" class="export-reply-author" {% if node.author.avatar %}style="background-image: url({{ node.author.avatar }})"{% endif %}></a>
             <span class="export-reply-timestamp" title="{{ node.timestamp|date("r") }}">{{ node.timestamp|date("j M") }}</span>
         </div>
         {%- if node.nodes %}{{ macro_nodes(node.nodes) }}{% endif -%}
     </div>
-{%- endmacro %}
+{%- endmacro -%}
 
-{% macro macro_paragraph node -%}
-    <div class="export-type-paragraph {% if node.bulleted %}export-type-paragraph-bulleted{% endif %}">
+{%- macro macro_paragraph node -%}
+    <div class="export-paragraph {% if node.bulleted %}export-paragraph-bulleted{% endif %}">
         {%- if node.nodes %}{{ macro_nodes(node.nodes) }}{% endif -%}
     </div>
-{%- endmacro %}
+{%- endmacro -%}
 
-{% macro macro_link node -%}
-    <a class="export-type-link" href="{{ node.url }}">{% if node.nodes %}{{ macro_nodes(node.nodes) }}{% endif %}</a>
-{%- endmacro %}
+{%- macro macro_link node -%}
+    <a class="export-link" href="{{ node.url }}">{% if node.nodes %}{{ macro_nodes(node.nodes) }}{% endif %}</a>
+{%- endmacro -%}
 
-{% macro macro_text node -%}
-    <span class="export-type-text
+{%- macro macro_text node -%}
+    <span class="export-text
             {% if node.bold %}export-text-bold{% endif %}
             {% if node.italic %}export-text-italic{% endif %}
             {% if node.struckthrough %}export-text-struckthrough{% endif %}
@@ -28,44 +34,47 @@
         {%- if node.value %}{{ node.value }}{% endif -%}
         {%- if node.nodes %}{{ macro_nodes(node.nodes) }}{% endif -%}
     </span>
-{%- endmacro %}
+{%- endmacro -%}
 
-{% macro macro_attachment node -%}
-    <a class="export-type-attachment" href="{{ node.url }}"><img src="{{ node.url }}"></a>
-{%- endmacro %}
+{%- macro macro_attachment node -%}
+    <a class="export-attachment" href="{{ node.url }}"><img src="{{ node.url }}"></a>
+{%- endmacro -%}
 
-{% macro macro_file node -%}
-    <a class="export-type-file" href="{{ node.url }}">
+{%- macro macro_file node -%}
+    <a class="export-file" href="{{ node.url }}">
         {%- if node.preview -%}
             <img src="{{ node.preview }}" title="{{ node.name }}">
         {%- else -%}
             {{ node.name|default("download") }}
         {%- endif -%}
     </a>
-{%- endmacro %}
+{%- endmacro -%}
 
-{% macro macro_recipient node -%}
-    <a class="export-type-recipient" href="mailto:{{ node.user.email }}">@{{ node.user.name }}</a>
-{%- endmacro %}
+{%- macro macro_recipient node -%}
+    <a class="export-recipient" href="mailto:{{ node.user.email }}">@{{ node.user.name }}</a>
+{%- endmacro -%}
 
-{% macro macro_task node -%}
-    <span class="export-type-task">
+{%- macro macro_task node -%}
+    <span class="export-task">
         <input type="checkbox" {% if node.completed %}checked{% endif %} disabled>
         <a href="mailto:{{ node.user.email }}">{{ node.user.name }}</a>
         {{ node.deadline|date("j M g:i A") }}
     </span>
-{%- endmacro %}
+{%- endmacro -%}
 
-{% macro macro_tag node -%}
-    <span class="export-type-tag">#{{ node.value }}</span>
-{%- endmacro %}
+{%- macro macro_tag node -%}
+    <span class="export-tag">#{{ node.value }}</span>
+{%- endmacro -%}
 
-{% macro macro_gadget node -%}
-    <div class="export-type-gadget"><a href="{{ node.url }}">{{ node.url }}</a></div>
-{%- endmacro %}
+{%- macro macro_gadget node -%}
+    <div class="export-gadget"><a href="{{ node.url }}">{{ node.url }}</a></div>
+{%- endmacro -%}
 
-{% macro macro_nodes nodes -%}
+{%- macro macro_nodes nodes -%}
     {%- for node in nodes -%}
+        {%- if node.type == "thread" -%}
+            {{ macro_thread(node) }}
+        {%- endif -%}
         {%- if node.type == "reply" -%}
             {{ macro_reply(node) }}
         {%- endif -%}
@@ -98,9 +107,9 @@
             {{ macro_gadget(node) }}
         {%- endif -%}
     {%- endfor -%}
-{%- endmacro %}
+{%- endmacro -%}
 
-{% macro macro_main topic -%}
+{%- macro macro_main topic -%}
     <div class="export-content">
         <style scoped>
             .export-content {
@@ -113,30 +122,33 @@
             }
             .export-header {
                 padding: 8px;
+                background: #EAEAEA;
             }
             .export-header h1 {
                 margin: 0;
                 font-size: 18px;
             }
-            .export-type-reply {
-                padding: 12px 8px 10px 8px;
-                margin: 9px 0 0 0;
-                min-height: 36px;
-                border: 2px solid #D6D6D6;
+            .export-thread {
                 border-radius: 5px;
+                border: 2px solid #D6D6D6;
+                margin: 9px 0 16px 0;
                 clear: both;
             }
-            .export-content > .export-type-reply {
-                border-left: 0;
-                border-right: 0;
+            .export-content > .export-thread {
+                border: 0;
+                border-top: 2px solid #D6D6D6;
                 border-radius: 0;
                 margin: 0;
             }
-            .export-type-reply + .export-type-reply {
-                margin-top: 0px;
-                border-top: none;
-                border-top-left-radius: 0;
-                border-top-right-radius: 0;
+            .export-reply {
+                padding: 12px 8px 10px 8px;
+                min-height: 36px;
+            }
+            .export-thread > .export-reply {
+                border-top: 2px solid #D6D6D6;
+            }
+            .export-thread > .export-reply:first-of-type {
+                border: none;
             }
             .export-reply-info {
                 float: right;
@@ -155,43 +167,46 @@
                 font-family: sans-serif;
                 font-size: 10px;
             }
-            .export-type-paragraph {
+            .export-paragraph {
                 margin-top: 3px;
                 min-height: 0.5em;
             }
-            .export-type-paragraph-bulleted {
+            .export-paragraph-bulleted {
                 display: list-item;
                 list-style: disc outside;
                 margin-left: 16px;
             }
-            .export-type-attachment img {
+            .export-attachment img {
                 max-width: 200px;
                 max-height: 150px;
             }
-            .export-type-file img {
+            .export-file img {
                 background: silver;
                 max-width: 200px;
                 max-height: 150px;
             }
-            .export-type-recipient {
+            .export-recipient {
                 padding: 0 3px;
                 background: #EAEAEA;
                 border: 2px solid white;
                 border-radius: 3px;
             }
-            .export-type-task {
+            .export-task {
                 padding: 0 3px;
                 background: #EAEAEA;
                 border: 2px solid white;
                 border-radius: 3px;
             }
-            .export-type-tag {
+            .export-task input {
+                vertical-align: middle;
+            }
+            .export-tag {
                 padding: 0 3px;
                 background: #EAEAEA;
                 border: 2px solid white;
                 border-radius: 3px;
             }
-            .export-type-gadget {
+            .export-gadget {
                 padding: 12px 8px 10px 8px;
                 margin: 9px 0 16px 0;
                 background: #EAEAEA;
@@ -218,8 +233,8 @@
         </div>
         {{ macro_nodes(topic.nodes) }}
     </div>
-{%- endmacro %}
+{%- endmacro -%}
 
-{% block main -%}
+{%- block main -%}
     {{ macro_main(topic) }}
-{%- endblock %}
+{%- endblock -%}
