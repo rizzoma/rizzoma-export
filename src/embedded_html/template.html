@@ -1,6 +1,9 @@
 {% macro macro_reply node -%}
     <div class="export-type-reply">
-        <div><a href="mailto:{{ node.author.email }}" class="export-reply-author">{{ node.author.name }}:</a></div>
+        <div class="export-reply-info">
+            <a href="mailto:{{ node.author.email }}" title="{{ node.author.name }}" class="export-reply-author" {% if node.author.avatar %}style="background-image: url({{ node.author.avatar }})"{% endif %}></a>
+            <span class="export-reply-timestamp" title="{{ node.timestamp|date("r") }}">{{ node.timestamp|date("j M") }}</span>
+        </div>
         {%- if node.nodes %}{{ macro_nodes(node.nodes) }}{% endif -%}
     </div>
 {%- endmacro %}
@@ -117,20 +120,40 @@
             }
             .export-type-reply {
                 padding: 12px 8px 10px 8px;
-                margin: 9px 0 16px 0;
-                min-height: 1em;
+                margin: 9px 0 0 0;
+                min-height: 36px;
                 border: 2px solid #D6D6D6;
                 border-radius: 5px;
+                clear: both;
             }
             .export-content > .export-type-reply {
-                border-bottom: 0;
                 border-left: 0;
                 border-right: 0;
                 border-radius: 0;
                 margin: 0;
             }
+            .export-type-reply + .export-type-reply {
+                margin-top: 0px;
+                border-top: none;
+                border-top-left-radius: 0;
+                border-top-right-radius: 0;
+            }
+            .export-reply-info {
+                float: right;
+                margin: -6px -4px 0;
+            }
             .export-reply-author {
-                color: #333;
+                display: block;
+                background: white center center no-repeat;
+                background-size: cover;
+                border: 1px solid black;
+                width: 28px;
+                height: 28px;
+                margin: 0 auto;
+            }
+            .export-reply-timestamp {
+                font-family: sans-serif;
+                font-size: 10px;
             }
             .export-type-paragraph {
                 margin-top: 3px;
@@ -174,6 +197,7 @@
                 background: #EAEAEA;
                 border: 2px solid #D6D6D6;
                 border-radius: 5px;
+                clear: both;
             }
             .export-text-bold {
                 font-weight: bold;
