@@ -35,10 +35,10 @@ Represents date. Format is described by [ISO 8601] e.g. 2012-12-29T18:00:00.000Z
 All dates provided on UTC.
 
 ### User object
-Contains information about some user.
-* __email__: _string_, email
+Contains information about some user. Email address may be hidden.
 * __name__: _string_, name
 * avatar: _string_, URL of avatar picture
+* email: _string_, email
 
 ## Nodes
 ### Topic node (type="topic")
