@@ -2,6 +2,11 @@ swig = require('swig')
 
 template = swig.compileFile("#{__dirname}/template.html")
 
-exports.toHtml = (data) ->
+exports.toHtml = (markup, params) ->
     parent = "#{__dirname}/../embedded_html/template.html"
-    return template.render({template: parent, topic: data})
+    params.offset = -params.offset / 60
+    return template.render(
+        template: parent
+        topic: markup
+        params: params
+    )

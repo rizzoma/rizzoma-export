@@ -1,2 +1,2 @@
-exports.toJson = (data) ->
-    return JSON.stringify(data)
+exports.toJson = (markup, params) ->
+    return JSON.stringify(markup)

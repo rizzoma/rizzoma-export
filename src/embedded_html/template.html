@@ -9,7 +9,7 @@
     <div class="export-reply">
         <div class="export-reply-info">
             <a href="mailto:{{ node.author.email }}" title="{{ node.author.name }}" class="export-reply-author {% if not node.author.avatar %}export-reply-author-no-avatar{% endif %}" {% if node.author.avatar %}style="background-image: url({{ node.author.avatar }})"{% endif %}></a>
-            <span class="export-reply-timestamp" title="{{ node.timestamp|date("r") }}">{{ node.timestamp|date("j M") }}</span>
+            <span class="export-reply-timestamp" title="{{ node.timestamp|date("Y-n-j g:i A", params.offset) }}">{{ node.timestamp|date("j M", params.offset) }}</span>
         </div>
         {%- if node.nodes %}{{ macro_nodes(node.nodes) }}{% endif -%}
     </div>
@@ -59,7 +59,7 @@
     <span class="export-task">
         <input type="checkbox" {% if node.completed %}checked{% endif %} disabled>
         <a href="mailto:{{ node.user.email }}">{{ node.user.name }}</a>
-        {{ node.deadline|date("j M g:i A") }}
+        {{ node.deadline|date("j M g:i A", params.offset) }}
     </span>
 {%- endmacro -%}
 
