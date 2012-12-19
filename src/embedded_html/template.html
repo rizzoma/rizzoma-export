@@ -57,9 +57,14 @@
 
 {%- macro macro_task node -%}
     <span class="export-task">
-        <input type="checkbox" {% if node.completed %}checked{% endif %} disabled>
-        <a href="mailto:{{ node.user.email }}">{{ node.user.name }}</a>
-        {{ node.deadline|date("j M g:i A", params.offset) }}
+        <input type="checkbox" {% if node.completed %}checked{% endif %} disabled><a href="mailto:{{ node.user.email }}">{{ node.user.name }}</a>
+        {%- if node.deadline -%}
+            {%- if node.daylong -%}
+                {{ node.deadline|date("j M", params.offset) }}
+            {%- else -%}
+                {{ node.deadline|date("j M g:i A", params.offset) }}
+            {%- endif -%}
+        {%- endif -%}
     </span>
 {%- endmacro -%}
 
@@ -224,6 +229,9 @@
             }
             .export-task input {
                 vertical-align: middle;
+            }
+            .export-task a {
+                margin: 0 3px;
             }
             .export-tag {
                 padding: 0 3px;

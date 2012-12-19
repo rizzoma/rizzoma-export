@@ -48,7 +48,7 @@ Top-level node which contains all data.
 * __nodes__: _array_, list of first-level replies
 
 ### Thread node (type="thread")
-List of replies that follow one by one
+List of replies that follow one by one.
 * __nodes__: _array_, list of child replies of the thread
 
 ### Reply node (type="reply")
@@ -95,8 +95,9 @@ Also known as "mention". This is a link to some user, prepended by the "@" symbo
 ### Task node (type="task")
 Similar to the "recipient" node but has an extra functionality.
 * __user__: _[user]_, some information about recipient
-* __deadline__: _[date]_, timestamp when the task will expire
 * __completed__: _boolean_, _true_ if task is already completed
+* deadline: _[date]_, timestamp when the task will expire
+* daylong: _boolean_, _true_ if the task is actual for all the day
 
 ### Gadget node (type="gadget")
 Embedded [OpenSocial] gadget.
