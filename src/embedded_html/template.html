@@ -134,6 +134,9 @@
                 margin: 0;
                 font-size: 18px;
             }
+            .export-thread-controls {
+                float: right;
+            }
             .export-content > .export-thread-control {
                 display: none;
             }
@@ -240,6 +243,8 @@
                 border-radius: 3px;
             }
             .export-gadget {
+                display: inline-block;
+                width: 90%;
                 padding: 12px 8px 10px 8px;
                 margin: 9px 0 16px 0;
                 background: #EAEAEA;
@@ -261,32 +266,73 @@
             }
         </style>
         <script>
-            function addClass(element, className) {
-                element.className += ' ' + className;
-            }
             function hasClass(element, className) {
                 return element.className.indexOf(className) != -1;
+            }
+            function addClass(element, className) {
+                if (!hasClass(element, className)) {
+                    element.className += ' ' + className;
+                }
             }
             function removeClass(element, className) {
                 element.className = element.className.replace(className, '');
             }
-            document.onclick = function(event) {
-                var target = event.target;
-                if (!hasClass(target, 'export-thread-control')) {
-                    return;
-                }
-                var thread = target.nextElementSibling;
+            function toggleThread(control, func) {
+                var thread = control.nextElementSibling;
                 if (!hasClass(thread, 'export-thread')) {
                     return;
                 }
-                var func = hasClass(target, 'export-thread-folded') ? removeClass : addClass;
-                func(target, 'export-thread-folded');
+                func(control, 'export-thread-folded');
                 func(thread, 'export-thread-folded');
+            }
+            function foldThread(control) {
+                toggleThread(control, addClass);
+            }
+            function unfoldThread(control) {
+                toggleThread(control, removeClass);
+            }
+            function toggleAllThreads(func) {
+                var controls = document.getElementsByClassName('export-thread-control');
+                for (var i = 0; i < controls.length; i += 1) {
+                    var control = controls[i];
+                    if (!hasClass(control.parentNode, 'export-content')) {
+                        func(control);
+                    }
+                }
+            }
+            function onFoldAllThreadsClick() {
+                toggleAllThreads(foldThread);
+            }
+            function onUnfoldAllThreadsClick() {
+                toggleAllThreads(unfoldThread);
+            }
+            function onThreadControlClick(control) {
+                if (hasClass(control, 'export-thread-folded')) {
+                    unfoldThread(control);
+                } else {
+                    foldThread(control);
+                }
+            }
+            document.onclick = function(event) {
+                var target = event.target;
+                if (hasClass(target, 'export-fold-all-threads')) {
+                    return onFoldAllThreadsClick(target);
+                }
+                if (hasClass(target, 'export-unfold-all-threads')) {
+                    return onUnfoldAllThreadsClick(target);
+                }
+                if (hasClass(target, 'export-thread-control')) {
+                    return onThreadControlClick(target);
+                }
             };
         </script>
         <div class="export-header">
             <h1>{{ topic.title }}</h1>
-            (<a href="{{ topic.url }}">original topic</a>)
+            <span class="export-thread-controls">
+                <a href="javascript:void(0)" class="export-fold-all-threads">Hide all replies</a> |
+                <a href="javascript:void(0)" class="export-unfold-all-threads">Show all replies</a>
+            </span>
+            <a href="{{ topic.url }}">Original topic</a>
         </div>
         {{ macro_nodes(topic.nodes) }}
     </div>
