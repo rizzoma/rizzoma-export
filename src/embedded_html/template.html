@@ -1,6 +1,6 @@
 {%- macro macro_thread node -%}
-    <span class="export-thread-control"></span>
-    <div class="export-thread">
+    <span class="export-thread-control {% if node.folded %}export-thread-folded{% endif %}"></span>
+    <div class="export-thread {% if node.folded %}export-thread-folded{% endif %}">
         {%- if node.nodes %}{{ macro_nodes(node.nodes) }}{% endif -%}
     </div>
 {%- endmacro -%}

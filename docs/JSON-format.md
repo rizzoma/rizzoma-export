@@ -49,6 +49,7 @@ Top-level node which contains all data.
 
 ### Thread node (type="thread")
 List of replies that follow one by one.
+* __folded__: _boolean_, _true_ if the thread is folded by default
 * __nodes__: _array_, list of child replies of the thread
 
 ### Reply node (type="reply")
