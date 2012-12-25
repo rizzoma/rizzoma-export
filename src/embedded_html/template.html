@@ -16,7 +16,7 @@
 {%- endmacro -%}
 
 {%- macro macro_paragraph node -%}
-    <div class="export-paragraph {% if node.bulleted %}export-paragraph-bulleted{% endif %}">
+    <div class="export-paragraph {% if "nesting" in node %}export-paragraph-bulleted export-paragraph-bulleted-{{ node.nesting % 3 }}{% endif %}" {% if "nesting" in node %}style="margin-left: {{ node.nesting * 16 + 16 }}px"{% endif %}>
         {%- if node.nodes %}{{ macro_nodes(node.nodes) }}{% endif -%}
     </div>
 {%- endmacro -%}
@@ -206,8 +206,16 @@
             }
             .export-paragraph-bulleted {
                 display: list-item;
-                list-style: disc outside;
-                margin-left: 16px;
+                list-style-position: outside;
+            }
+            .export-paragraph-bulleted-0 {
+                list-style-type: disc;
+            }
+            .export-paragraph-bulleted-1 {
+                list-style-type: circle;
+            }
+            .export-paragraph-bulleted-2 {
+                list-style-type: square;
             }
             .export-attachment img {
                 max-width: 200px;

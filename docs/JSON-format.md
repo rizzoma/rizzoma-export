@@ -61,7 +61,7 @@ Each reply is transformed to single node.
   
 ### Paragraph node (type="paragraph")
 Paragraph node defines a single text block that should be ended up with newline.
-* bulleted: _boolean_, _true_ if text block is a list item
+* nesting: _integer_, nesting level if the paragraph is a list item
 * __nodes__: _array_, list of child nodes of the paragraph
 
 ### Text node (type="text")
