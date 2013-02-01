@@ -15,8 +15,27 @@
     </div>
 {%- endmacro -%}
 
+{%- macro macro_list node -%}
+    {%- if node.subtype == "unordered" -%}
+        <ul class="export-list export-list-unordered-{{ node.level % 3 }}" style="margin-left: {{ node.level * 16 + 16 }}px">
+            {%- if node.nodes %}{{ macro_nodes(node.nodes) }}{% endif -%}
+        </ul>
+    {%- endif -%}
+    {%- if node.subtype == "ordered" -%}
+        <ol start="{{ node.start }}" class="export-list export-list-ordered" style="margin-left: {{ node.level * 16 + 16 }}px">
+            {%- if node.nodes %}{{ macro_nodes(node.nodes) }}{% endif -%}
+        </ol>
+    {%- endif -%}
+{%- endmacro -%}
+
+{%- macro macro_list_item node -%}
+    <li class="export-list-item">
+        {%- if node.nodes %}{{ macro_nodes(node.nodes) }}{% endif -%}
+    </li>
+{%- endmacro -%}
+
 {%- macro macro_paragraph node -%}
-    <div class="export-paragraph {% if "nesting" in node %}export-paragraph-bulleted export-paragraph-bulleted-{{ node.nesting % 3 }}{% endif %}" {% if "nesting" in node %}style="margin-left: {{ node.nesting * 16 + 16 }}px"{% endif %}>
+    <div class="export-paragraph">
         {%- if node.nodes %}{{ macro_nodes(node.nodes) }}{% endif -%}
     </div>
 {%- endmacro -%}
@@ -27,11 +46,11 @@
 
 {%- macro macro_text node -%}
     <span class="export-text
-            {% if node.bold %}export-text-bold{% endif %}
-            {% if node.italic %}export-text-italic{% endif %}
-            {% if node.struckthrough %}export-text-struckthrough{% endif %}
-            {% if node.underlined %}export-text-underlined{% endif %}
-        " {% if node.bgColor and not node.bgColor|contains_semicolon %}style="background-color: {{ node.bgColor }}"{% endif %}>
+      {% if node.bold %}export-text-bold{% endif %}
+      {% if node.italic %}export-text-italic{% endif %}
+      {% if node.struckthrough %}export-text-struckthrough{% endif %}
+      {% if node.underlined %}export-text-underlined{% endif %}"
+      {% if node.bgColor and not node.bgColor|contains_semicolon %}style="background-color: {{ node.bgColor }}"{% endif %}>
         {%- if node.value %}{{ node.value }}{% endif -%}
         {%- if node.nodes %}{{ macro_nodes(node.nodes) }}{% endif -%}
     </span>
@@ -83,6 +102,12 @@
         {%- endif -%}
         {%- if node.type == "reply" -%}
             {{ macro_reply(node) }}
+        {%- endif -%}
+        {%- if node.type == "list" -%}
+            {{ macro_list(node) }}
+        {%- endif -%}
+        {%- if node.type == "listItem" -%}
+            {{ macro_list_item(node) }}
         {%- endif -%}
         {%- if node.type == "paragraph" -%}
             {{ macro_paragraph(node) }}
@@ -200,22 +225,26 @@
                 font-family: sans-serif;
                 font-size: 10px;
             }
+            .export-list {
+                list-style-position: outside;
+                margin: 0;
+                padding: 0;
+            }
+            .export-list-unordered-0 {
+                list-style-type: disc;
+            }
+            .export-list-unordered-1 {
+                list-style-type: circle;
+            }
+            .export-list-unordered-2 {
+                list-style-type: square;
+            }
+            .export-list-ordered {
+                list-style-type: decimal;
+            }
             .export-paragraph {
                 margin-top: 3px;
                 min-height: 0.5em;
-            }
-            .export-paragraph-bulleted {
-                display: list-item;
-                list-style-position: outside;
-            }
-            .export-paragraph-bulleted-0 {
-                list-style-type: disc;
-            }
-            .export-paragraph-bulleted-1 {
-                list-style-type: circle;
-            }
-            .export-paragraph-bulleted-2 {
-                list-style-type: square;
             }
             .export-attachment img {
                 max-width: 200px;
