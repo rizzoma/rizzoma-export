@@ -88,7 +88,11 @@
 {%- endmacro -%}
 
 {%- macro macro_tag node -%}
-    <span class="export-tag">#{{ node.value }}</span>
+    {% if params.tagSearchUrl %}
+        <a href="{{ params.tagSearchUrl }}{{ node.value }}" class="export-tag">#{{ node.value }}</a>
+    {% else %}
+        <span class="export-tag">#{{ node.value }}</span>
+    {% endif %}
 {%- endmacro -%}
 
 {%- macro macro_gadget node -%}
@@ -278,6 +282,13 @@
                 background: #EAEAEA;
                 border: 2px solid white;
                 border-radius: 3px;
+            }
+            a.export-tag {
+                color: black;
+                text-decoration: none;
+            }
+            a.export-tag:hover {
+                text-decoration: underline;
             }
             .export-gadget {
                 display: inline-block;
