@@ -89,7 +89,7 @@
 
 {%- macro macro_tag node -%}
     {% if params.tagSearchUrl %}
-        <a href="{{ params.tagSearchUrl }}{{ node.value }}" class="export-tag">#{{ node.value }}</a>
+        <a href="{{ params.tagSearchUrl }}{{ node.value|url_encode }}" rel="tag" class="export-tag">#{{ node.value }}</a>
     {% else %}
         <span class="export-tag">#{{ node.value }}</span>
     {% endif %}
