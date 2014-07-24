@@ -9,4 +9,5 @@ exports.toHtml = (markup, params) ->
         template: parent
         topic: markup
         params: params
+        exportId: (''+Math.random()).substring(2)
     )

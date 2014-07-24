@@ -5,10 +5,14 @@
     </div>
 {%- endmacro -%}
 
+{%- macro macro_mailto_url email -%}
+    {% if email %}mailto:{{email}}{% else %}#{% endif %}
+{%- endmacro -%}
+
 {%- macro macro_reply node -%}
     <div class="export-reply">
         <div class="export-reply-info">
-            <a href="mailto:{{ node.author.email }}" title="{{ node.author.name }}" class="export-reply-author {% if not node.author.avatar %}export-reply-author-no-avatar{% endif %}" {% if node.author.avatar %}style="background-image: url({{ node.author.avatar }})"{% endif %}></a>
+            <a href="{{ macro_mailto_url(node.author.email) }}" title="{{ node.author.name }}" class="export-reply-author {% if not node.author.avatar %}export-reply-author-no-avatar{% endif %}" {% if node.author.avatar %}style="background-image: url({{ node.author.avatar }})"{% endif %}></a>
             <span class="export-reply-timestamp" title="{{ node.timestamp|date("Y-n-j g:i A", params.offset) }}">{{ node.timestamp|date("j M", params.offset) }}</span>
         </div>
         {%- if node.nodes %}{{ macro_nodes(node.nodes) }}{% endif -%}
@@ -46,11 +50,11 @@
 
 {%- macro macro_text node -%}
     <span class="export-text
-      {% if node.bold %}export-text-bold{% endif %}
-      {% if node.italic %}export-text-italic{% endif %}
-      {% if node.struckthrough %}export-text-struckthrough{% endif %}
-      {% if node.underlined %}export-text-underlined{% endif %}"
-      {% if node.bgColor and not node.bgColor|contains_semicolon %}style="background-color: {{ node.bgColor }}"{% endif %}>
+      {%- if node.bold %} export-text-bold{% endif %}
+      {%- if node.italic %} export-text-italic{% endif %}
+      {%- if node.struckthrough %} export-text-struckthrough{% endif %}
+      {%- if node.underlined %} export-text-underlined{% endif %}"
+      {%- if node.bgColor and not node.bgColor|contains_semicolon %} style="background-color: {{ node.bgColor }}"{% endif %}>
         {%- if node.value %}{{ node.value }}{% endif -%}
         {%- if node.nodes %}{{ macro_nodes(node.nodes) }}{% endif -%}
     </span>
@@ -71,12 +75,12 @@
 {%- endmacro -%}
 
 {%- macro macro_recipient node -%}
-    <a class="export-recipient" href="mailto:{{ node.user.email }}">@{{ node.user.name }}</a>
+    <a class="export-recipient" href="{{ macro_mailto_url(node.user.email) }}">@{{ node.user.name }}</a>
 {%- endmacro -%}
 
 {%- macro macro_task node -%}
     <span class="export-task">
-        <input type="checkbox" {% if node.completed %}checked{% endif %} disabled><a href="mailto:{{ node.user.email }}">{{ node.user.name }}</a>
+        <input type="checkbox" {% if node.completed %}checked{% endif %} disabled><a href="{{ macro_mailto_url(node.user.email) }}">{{ node.user.name }}</a>
         {%- if node.deadline -%}
             {%- if node.daylong -%}
                 {{ node.deadline|date("j M", params.offset) }}
@@ -88,11 +92,11 @@
 {%- endmacro -%}
 
 {%- macro macro_tag node -%}
-    {% if params.tagSearchUrl %}
+    {%- if params.tagSearchUrl -%}
         <a href="{{ params.tagSearchUrl }}{{ node.value|url_encode }}" rel="tag" class="export-tag">#{{ node.value }}</a>
-    {% else %}
+    {%- else -%}
         <span class="export-tag">#{{ node.value }}</span>
-    {% endif %}
+    {%- endif -%}
 {%- endmacro -%}
 
 {%- macro macro_gadget node -%}
@@ -145,7 +149,7 @@
 {%- endmacro -%}
 
 {%- macro macro_main topic -%}
-    <div class="export-content">
+    <div class="export-content" id="export-content-{{exportId}}">
         <style scoped>
             .export-content {
                 font-family: arial, sans-serif;
@@ -314,65 +318,75 @@
             }
         </style>
         <script>
-            function hasClass(element, className) {
-                return element.className.indexOf(className) != -1;
-            }
-            function addClass(element, className) {
-                if (!hasClass(element, className)) {
-                    element.className += ' ' + className;
+            (function() {
+                function hasClass(element, className) {
+                    return element.className.indexOf(className) != -1;
                 }
-            }
-            function removeClass(element, className) {
-                element.className = element.className.replace(className, '');
-            }
-            function toggleThread(control, func) {
-                var thread = control.nextElementSibling;
-                if (!hasClass(thread, 'export-thread')) {
-                    return;
-                }
-                func(control, 'export-thread-folded');
-                func(thread, 'export-thread-folded');
-            }
-            function foldThread(control) {
-                toggleThread(control, addClass);
-            }
-            function unfoldThread(control) {
-                toggleThread(control, removeClass);
-            }
-            function toggleAllThreads(func) {
-                var controls = document.getElementsByClassName('export-thread-control');
-                for (var i = 0; i < controls.length; i += 1) {
-                    var control = controls[i];
-                    if (!hasClass(control.parentNode, 'export-content')) {
-                        func(control);
+                function addClass(element, className) {
+                    if (!hasClass(element, className)) {
+                        element.className += ' ' + className;
                     }
                 }
-            }
-            function onFoldAllThreadsClick() {
-                toggleAllThreads(foldThread);
-            }
-            function onUnfoldAllThreadsClick() {
-                toggleAllThreads(unfoldThread);
-            }
-            function onThreadControlClick(control) {
-                if (hasClass(control, 'export-thread-folded')) {
-                    unfoldThread(control);
-                } else {
-                    foldThread(control);
+                function removeClass(element, className) {
+                    element.className = element.className.replace(className, '');
                 }
-            }
-            document.onclick = function(event) {
-                var target = event.target;
-                if (hasClass(target, 'export-fold-all-threads')) {
-                    return onFoldAllThreadsClick(target);
+                function toggleThread(control, func) {
+                    var thread = control.nextElementSibling;
+                    if (!hasClass(thread, 'export-thread')) {
+                        return;
+                    }
+                    func(control, 'export-thread-folded');
+                    func(thread, 'export-thread-folded');
                 }
-                if (hasClass(target, 'export-unfold-all-threads')) {
-                    return onUnfoldAllThreadsClick(target);
+                function foldThread(control) {
+                    toggleThread(control, addClass);
                 }
-                if (hasClass(target, 'export-thread-control')) {
-                    return onThreadControlClick(target);
+                function unfoldThread(control) {
+                    toggleThread(control, removeClass);
                 }
-            };
+                function toggleAllThreads(func) {
+                    var controls = document.getElementsByClassName('export-thread-control');
+                    for (var i = 0; i < controls.length; i += 1) {
+                        var control = controls[i];
+                        if (!hasClass(control.parentNode, 'export-content')) {
+                            func(control);
+                        }
+                    }
+                }
+                function onFoldAllThreadsClick() {
+                    toggleAllThreads(foldThread);
+                }
+                function onUnfoldAllThreadsClick() {
+                    toggleAllThreads(unfoldThread);
+                }
+                function onThreadControlClick(control) {
+                    if (hasClass(control, 'export-thread-folded')) {
+                        unfoldThread(control);
+                    } else {
+                        foldThread(control);
+                    }
+                }
+                function listener(event) {
+                    if(!event) event = window.event
+                    var target = event.target || event.srcElement;
+                    if(!target) return;
+                    if (hasClass(target, 'export-fold-all-threads')) {
+                        return onFoldAllThreadsClick(target);
+                    }
+                    if (hasClass(target, 'export-unfold-all-threads')) {
+                        return onUnfoldAllThreadsClick(target);
+                    }
+                    if (hasClass(target, 'export-thread-control')) {
+                        return onThreadControlClick(target);
+                    }
+                };
+                var el = document.getElementById('export-content-{{exportId}}');
+                if(el.addEventListener) {
+                    el.addEventListener('click', listener, false);
+                }else if(el.attachEvent) {
+                    el.attachEvent('onclick', listener)
+                }
+            })();
         </script>
         <div class="export-header">
             <h1>{{ topic.title }}</h1>
